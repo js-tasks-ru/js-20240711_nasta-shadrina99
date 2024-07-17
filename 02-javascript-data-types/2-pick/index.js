@@ -5,5 +5,15 @@
  * @returns {object} - returns the new object
  */
 export const pick = (obj, ...fields) => {
+    const newObj = {};
+    
+    fields.map(field => {
+        Object.keys(obj).find(item => {
+            if (item === field) {
+                newObj[field] = obj[item];
+            }
+        });
+    });
 
+    return newObj;
 };
