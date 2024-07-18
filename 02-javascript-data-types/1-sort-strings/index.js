@@ -5,17 +5,12 @@
  * @returns {string[]}
  */
 
-function ascSorting(a, b) {
-    const result = a.localeCompare(b, {sensitivity: "base"});
-    return a.toLowerCase() === b.toLowerCase() && result > 0 ? -1 : result;
-}
-
 export function sortStrings(arr, param = 'asc') {
     let result;
     const newArray = [...arr];
 
-    const sorting = newArray.sort((a, b)=> ascSorting(a, b));
-    
+    const sorting = newArray.sort((a, b)=> a.localeCompare(b, ['ru', 'en'], { caseFirst: "upper" }));
+
     if (param === 'asc') {
         result = sorting;
     }
