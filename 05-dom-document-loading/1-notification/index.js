@@ -52,6 +52,6 @@ export default class NotificationMessage {
     }
 
     destroy() {
-        this.delete();
+        this.elem.remove();
     }
 }
