@@ -2,56 +2,55 @@ export default class NotificationMessage {
     static lastShownComponent;
 
     constructor(message = '', props = {}) {
-        this.message = message;
-        this.props = props;
-        this.elem = this.show();
+        this.message = message || '';
+        this.timerId = '';
+        this.duration = props.duration;
+        this.type = props.type || 'success';
+        this.element = this.createElement();
     }
 
-    getTemplate() {
-        const {type = '', duration = 0} = this.props;
-
+    createTemplate() {
         return `
-            <div class="notification ${type}" style="--value:${duration / 1000}s">
+            <div class="notification ${this.type}" style="--value:${this.duration / 1000}s">
                 <div class="timer"></div>
                 <div class="inner-wrapper">
-                    <div class="notification-header">${type}</div>
+                    <div class="notification-header">${this.type}</div>
                     <div class="notification-body">${this.message}</div>
                 </div>
             </div>
         `;
     }
 
-    createElem() {
+    createElement() {
         const div = document.createElement('div');
-        div.innerHTML = this.getTemplate();
-        const firstElementChild = div.firstElementChild;
-        return firstElementChild;
+        div.innerHTML = this.createTemplate();
+        this.element = div.firstElementChild;
+        return this.element;
     }
 
-    show() {
-        this.hideUnnecessaryElements();
-        this.elem = this.createElem();
-        document.body.append(this.elem);
-        return this.elem;
+    show(container = document.body) {
+        this.changedLastShownComponent();
+        container.append(this.element);
+        this.setTimer();
     }
 
-    hideUnnecessaryElements() {
-        const {duration = 0} = this.props;
-
+    changedLastShownComponent() {
         if (NotificationMessage.lastShownComponent) {
-            NotificationMessage.lastShownComponent.delete();
+            NotificationMessage.lastShownComponent.destroy();
         }
-        
         NotificationMessage.lastShownComponent = this;
-
-        setTimeout(() => this.delete(), duration);
     }
 
-    delete() {
-        this.elem.remove();
+    setTimer() {
+        this.timerId = setTimeout(() => this.destroy(), this.duration);
+    }
+
+    remove() {
+        this.element.remove();
     }
 
     destroy() {
-        this.elem.remove();
+        clearTimeout(this.timerId);
+       this.remove();
     }
 }

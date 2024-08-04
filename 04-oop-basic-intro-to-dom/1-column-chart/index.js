@@ -22,7 +22,7 @@ export default class ColumnChart {
         });
     }
 
-    renderChartData(data) {
+    createChartData(data) {
         const columnProps = this.getColumnProps(data);
         return columnProps.map(({value, percent}) => `<div style="--value: ${value}" data-tooltip="${percent}%"></div>`).join('');
     }
@@ -42,21 +42,16 @@ export default class ColumnChart {
                     </div>
                     <div class="column-chart__container">
                         <div data-element="header" class="column-chart__header">${formatHeading(value)}</div>
-                        <div data-element="body" class="column-chart__chart">${this.renderChartData(data)}</div>
+                        <div data-element="body" class="column-chart__chart">${this.createChartData(data)}</div>
                     </div>
                 </div>
         `;
     }
 
-    crealeElem(template) {
-        const div = document.createElement('div');
-        div.innerHTML = template;
-        return div.firstElementChild;
-    }
-
     update() {
-        const template = this.getTemplate();
-        this.element = this.crealeElem(template);
+        const div = document.createElement('div');
+        div.innerHTML = this.getTemplate();
+        this.element = div.firstElementChild;
         return this.element;
     }
 
